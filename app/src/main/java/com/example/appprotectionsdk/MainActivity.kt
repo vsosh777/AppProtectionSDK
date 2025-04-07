@@ -305,6 +305,7 @@ fun MainScreen(sdk: AppProtectionSDK) {
         Button(
             onClick = {
                 val intent = android.content.Intent(sdk.getContext(), MemoryTestActivity::class.java)
+                intent.addFlags(android.content.Intent.FLAG_ACTIVITY_NEW_TASK)
                 sdk.getContext().startActivity(intent)
             },
             modifier = Modifier.fillMaxWidth()
