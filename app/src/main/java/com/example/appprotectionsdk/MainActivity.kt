@@ -74,15 +74,15 @@ class MainActivity : ComponentActivity() {
 fun MainScreen(sdk: AppProtectionSDK) {
     var protectionStatus by remember { mutableStateOf(sdk.isProtected()) }
     var memoryStatus by remember { mutableStateOf(sdk.getProtectionStatus()) }
-    var rootStatus by remember { mutableStateOf("Checking root status...") }
-    var debugStatus by remember { mutableStateOf("Not checked") }
+    var rootStatus by remember { mutableStateOf("Проверка статуса root...") }
+    var debugStatus by remember { mutableStateOf("Не проверено") }
     var isMonitoringDebug by remember { mutableStateOf(false) }
     var showDebuggerDetectedDialog by remember { mutableStateOf(false) }
     var simulateTermination by remember { mutableStateOf(false) }
 
     LaunchedEffect(Unit) {
         val isRooted = sdk.isDeviceRooted()
-        rootStatus = if (isRooted) "Device is rooted!" else "Device is not rooted"
+        rootStatus = if (isRooted) "Устроиство рутировано!" else "Устроиство не рутировано"
     }
     
     LaunchedEffect(isMonitoringDebug) {
@@ -91,9 +91,9 @@ fun MainScreen(sdk: AppProtectionSDK) {
                 val isBeingDebugged = sdk.isBeingDebugged()
                 debugStatus = if (isBeingDebugged) {
                     showDebuggerDetectedDialog = true
-                    "Debugger detected! (Auto)" 
+                    "Отладчик обнаружен! (Авто)"
                 } else {
-                    "No debugger detected (Monitoring...)"
+                    "Отладчик не обнаружен (Мониторинг...)"
                 }
                 kotlinx.coroutines.delay(1000)
             }
@@ -112,12 +112,12 @@ fun MainScreen(sdk: AppProtectionSDK) {
                 verticalArrangement = Arrangement.spacedBy(16.dp)
             ) {
                 Text(
-                    text = "APPLICATION TERMINATED",
+                    text = "ПРИЛОЖЕНИЕ ЗАВЕРШЕНО",
                     style = MaterialTheme.typography.headlineMedium,
                     color = MaterialTheme.colorScheme.onError
                 )
                 Text(
-                    text = "Security violation detected: Debugger attached",
+                    text = "Обнаружено нарушение безопасности: Подключен отладчик",
                     style = MaterialTheme.typography.bodyLarge,
                     color = MaterialTheme.colorScheme.onError
                 )
@@ -128,7 +128,7 @@ fun MainScreen(sdk: AppProtectionSDK) {
                         contentColor = MaterialTheme.colorScheme.error
                     )
                 ) {
-                    Text("Return to App (Demo Only)")
+                    Text("Вернуться в приложение (Только демонстрация)")
                 }
             }
         }
@@ -138,16 +138,16 @@ fun MainScreen(sdk: AppProtectionSDK) {
     if (showDebuggerDetectedDialog) {
         AlertDialog(
             onDismissRequest = { showDebuggerDetectedDialog = false },
-            title = { Text("Security Alert") },
+            title = { Text("Предупреждение безопасности") },
             text = { 
                 Column {
-                    Text("Debugger detected! This could indicate an attempt to tamper with the application.")
+                    Text("Обнаружен отладчик! Это может указывать на попытку взлома приложения.")
                     Spacer(modifier = Modifier.height(8.dp))
-                    Text("In a real application, this would trigger protective measures such as:")
-                    Text("• Terminating the application")
-                    Text("• Wiping sensitive data")
-                    Text("• Notifying security systems")
-                    Text("• Logging the incident")
+                    Text("В реальном приложении это вызвало бы защитные меры, такие как:")
+                    Text("• Завершение работы приложения")
+                    Text("• Удаление конфиденциальных данных")
+                    Text("• Уведомление систем безопасности")
+                    Text("• Логирование инцидента")
                 }
             },
             confirmButton = {
@@ -157,14 +157,14 @@ fun MainScreen(sdk: AppProtectionSDK) {
                         simulateTermination = true
                     }
                 ) {
-                    Text("Simulate Termination")
+                    Text("Симулировать завершение")
                 }
             },
             dismissButton = {
                 Button(
                     onClick = { showDebuggerDetectedDialog = false }
                 ) {
-                    Text("Dismiss (Demo Only)")
+                    Text("Отклонить (Только демонстрация)")
                 }
             }
         )
@@ -181,33 +181,33 @@ fun MainScreen(sdk: AppProtectionSDK) {
         verticalArrangement = Arrangement.spacedBy(16.dp)
     ) {
         Text(
-            text = "App Protection SDK Test",
+            text = "Тест AppProtectionSDK",
             style = MaterialTheme.typography.headlineMedium
         )
 
         StatusCard(
-            title = "Overall Protection Status",
-            status = if (protectionStatus) "Active" else "Inactive"
+            title = "Общий статус защиты",
+            status = if (protectionStatus) "Активен" else "Неактивен"
         )
 
         StatusCard(
-            title = "Memory Monitoring",
-            status = if (memoryStatus.memoryMonitoring) "Active" else "Inactive"
+            title = "Мониторинг памяти",
+            status = if (memoryStatus.memoryMonitoring) "Активен" else "Неактивен"
         )
 
         StatusCard(
-            title = "Debug Detection",
+            title = "Обнаружение отладки",
             status = debugStatus,
             statusColor = when {
-                debugStatus.contains("Debugger detected") -> MaterialTheme.colorScheme.error
-                debugStatus.contains("No debugger") -> MaterialTheme.colorScheme.primary
+                debugStatus.contains("Обнаружен отладчик") -> MaterialTheme.colorScheme.error
+                debugStatus.contains("Отладчик не обнаружен") -> MaterialTheme.colorScheme.primary
                 else -> MaterialTheme.colorScheme.onSurface
             }
         )
 
         if (memoryStatus.criticalRegions.isNotEmpty()) {
             StatusCard(
-                title = "Critical Regions",
+                title = "Критические регионы",
                 content = {
                     Column(
                         modifier = Modifier.padding(vertical = 4.dp)
@@ -226,7 +226,7 @@ fun MainScreen(sdk: AppProtectionSDK) {
 
         if (memoryStatus.protectedRegions.isNotEmpty()) {
             StatusCard(
-                title = "Protected Regions",
+                title = "Защищенные регионы",
                 content = {
                     LazyColumn(
                         modifier = Modifier.height(100.dp)
@@ -250,7 +250,7 @@ fun MainScreen(sdk: AppProtectionSDK) {
             },
             modifier = Modifier.fillMaxWidth()
         ) {
-            Text("Check Status")
+            Text("Проверить статус")
         }
 
         Button(
@@ -258,26 +258,26 @@ fun MainScreen(sdk: AppProtectionSDK) {
                 val isBeingDebugged = sdk.isBeingDebugged()
                 debugStatus = if (isBeingDebugged) {
                     showDebuggerDetectedDialog = true
-                    "Debugger detected!"
+                    "Обнаружен отладчик!"
                 } else {
-                    "No debugger detected"
+                    "Отладчик не обнаружен"
                 }
             },
             modifier = Modifier.fillMaxWidth()
         ) {
-            Text("Check Debug Status")
+            Text("Проверить статус отладки")
         }
         
         Button(
             onClick = {
                 isMonitoringDebug = !isMonitoringDebug
                 if (!isMonitoringDebug) {
-                    debugStatus = "Monitoring stopped"
+                    debugStatus = "Мониторинг остановлен"
                 }
             },
             modifier = Modifier.fillMaxWidth()
         ) {
-            Text(if (isMonitoringDebug) "Stop Debug Monitoring" else "Start Debug Monitoring")
+            Text(if (isMonitoringDebug) "Остановить мониторинг отладки" else "Начать мониторинг отладки")
         }
 
         Button(
@@ -288,7 +288,7 @@ fun MainScreen(sdk: AppProtectionSDK) {
             },
             modifier = Modifier.fillMaxWidth()
         ) {
-            Text("Stop Protection")
+            Text("Остановить защиту")
         }
 
         Button(
@@ -299,7 +299,7 @@ fun MainScreen(sdk: AppProtectionSDK) {
             },
             modifier = Modifier.fillMaxWidth()
         ) {
-            Text("Start Protection")
+            Text("Запустить защиту")
         }
         
         Button(
@@ -310,11 +310,11 @@ fun MainScreen(sdk: AppProtectionSDK) {
             },
             modifier = Modifier.fillMaxWidth()
         ) {
-            Text("Test Memory Protection")
+            Text("Тест защиты памяти")
         }
 
         Text(
-            text = "Root Detection Test",
+            text = "Тест обнаружения root",
             style = MaterialTheme.typography.headlineMedium
         )
         Spacer(modifier = Modifier.height(16.dp))

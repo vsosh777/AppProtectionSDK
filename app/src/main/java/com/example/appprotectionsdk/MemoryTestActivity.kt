@@ -81,23 +81,23 @@ class MemoryTestActivity : ComponentActivity() {
                             }
                             
                             if (allLinesMatch) {
-                                addLog("INFO: Changes to $region match expected pattern - not a security concern")
+                                addLog("ИНФО: Изменения в $region соответствуют ожидаемому шаблону - не является угрозой безопасности")
                                 return@launch
                             }
                         } catch (e: Exception) {
-                            addLog("WARNING: Could not verify pattern for $region: ${e.message}")
+                            addLog("ПРЕДУПРЕЖДЕНИЕ: Не удалось проверить шаблон для $region: ${e.message}")
                         }
                     }
                 }
                 
-                addLog("TAMPERING DETECTED: $region - $details")
+                addLog("ОБНАРУЖЕНО ВМЕШАТЕЛЬСТВО: $region - $details")
                 
                 if (isVisualCallbackEnabled) {
-                    tamperingWarningMessage = "Tampering detected in: $region\n\nDetails: $details"
+                    tamperingWarningMessage = "Обнаружено вмешательство в: $region\n\nДетали: $details"
                     showTamperingWarningDialog = true
-                    addLog("Displayed visual tampering alert")
+                    addLog("Отображено визуальное предупреждение о вмешательстве")
                 } else {
-                    addLog("Visual alerts are disabled. Enable them to see tampering warnings on screen.")
+                    addLog("Визуальные предупреждения отключены. Включите их, чтобы видеть предупреждения о вмешательстве на экране.")
                 }
             }
         }
@@ -110,11 +110,11 @@ class MemoryTestActivity : ComponentActivity() {
         
         sdk.getMemoryMonitor().setTamperingCallback(tamperingCallback)
         isTamperingCallbackActive = true
-        addLog("Permanent tampering callback set")
+        addLog("Постоянный обратный вызов вмешательства установлен")
         
         sdk.getMemoryMonitor().startPeriodicScanning(3000)
         isPeriodicScanningActive = true
-        addLog("Periodic scanning started (every 3 seconds)")
+        addLog("Периодическое сканирование начато (каждые 3 секунды)")
 
         setContent {
             MaterialTheme {
@@ -140,25 +140,25 @@ class MemoryTestActivity : ComponentActivity() {
             return try {
                 File(filePath).readText()
             } catch (e: Exception) {
-                "Error reading file: ${e.message}"
+                "Ошибка чтения файла: ${e.message}"
             }
         }
         
         if (showTamperingWarningDialog) {
             AlertDialog(
                 onDismissRequest = { showTamperingWarningDialog = false },
-                title = { Text("SECURITY ALERT: Tampering Detected") },
+                title = { Text("ПРЕДУПРЕЖДЕНИЕ БЕЗОПАСНОСТИ: Обнаружено вмешательство") },
                 text = { 
                     Column {
                         Text(tamperingWarningMessage)
                         Spacer(modifier = Modifier.height(8.dp))
-                        Text("This could indicate an attempt to compromise the application's security.")
-                        Text("In a production app, this would trigger protective measures.")
+                        Text("Это может указывать на попытку компрометации безопасности приложения.")
+                        Text("В производственном приложении это вызвало бы защитные меры.")
                     }
                 },
                 confirmButton = {
                     Button(onClick = { showTamperingWarningDialog = false }) {
-                        Text("Acknowledge")
+                        Text("Принять к сведению")
                     }
                 }
             )
@@ -171,7 +171,7 @@ class MemoryTestActivity : ComponentActivity() {
             verticalArrangement = Arrangement.spacedBy(8.dp)
         ) {
             Text(
-                text = "Memory Protection Test",
+                text = "Тест защиты памяти",
                 style = MaterialTheme.typography.headlineMedium
             )
             
@@ -180,38 +180,38 @@ class MemoryTestActivity : ComponentActivity() {
                     val memoryMonitor = sdk.getMemoryMonitor()
                     
                     val regionName = "test_region"
-                    addLog("Creating critical region: $regionName")
+                    addLog("Создание критического региона: $regionName")
                     memoryMonitor.addCriticalRegion(regionName)
                     
                     val protectResult = memoryMonitor.protectMemoryRegion(regionName)
-                    addLog("Protection result: $protectResult")
+                    addLog("Результат защиты: $protectResult")
                     
                     val beforeScanResult = memoryMonitor.scanMemoryRegion(regionName)
-                    addLog("Scan before tampering: $beforeScanResult")
+                    addLog("Сканирование до вмешательства: $beforeScanResult")
                     
                     if (!isTamperingCallbackActive) {
                         memoryMonitor.setTamperingCallback(tamperingCallback)
                         isTamperingCallbackActive = true
-                        addLog("Enabled tampering callback for memory tampering test")
+                        addLog("Включен обратный вызов вмешательства для теста вмешательства в память")
                     }
                     
                     if (!isPeriodicScanningActive) {
                         memoryMonitor.startPeriodicScanning(2000)
                         isPeriodicScanningActive = true
-                        addLog("Started periodic scanning")
+                        addLog("Начато периодическое сканирование")
                     }
                     
                     val tamperResult = memoryMonitor.simulateMemoryTampering(regionName)
-                    addLog("Tampering result: $tamperResult")
+                    addLog("Результат вмешательства: $tamperResult")
                     
                     val afterScanResult = memoryMonitor.scanMemoryRegion(regionName)
-                    addLog("Scan after tampering: $afterScanResult (Integrity ${if(afterScanResult) "OK" else "FAIL"})")
+                    addLog("Сканирование после вмешательства: $afterScanResult (Целостность ${if(afterScanResult) "ОК" else "ПОВРЕЖДЕНА"})")
                     
                     refreshProtectedRegions()
                 },
                 modifier = Modifier.fillMaxWidth()
             ) {
-                Text("Simulate Memory Tampering")
+                Text("Симулировать вмешательство в память")
             }
             
             Button(
@@ -219,35 +219,35 @@ class MemoryTestActivity : ComponentActivity() {
                     val memoryMonitor = sdk.getMemoryMonitor()
                     
                     val testFile = File(filesDir, "protected_file.txt")
-                    addLog("Creating test file at ${testFile.absolutePath}")
+                    addLog("Создание тестового файла в ${testFile.absolutePath}")
                     
-                    val sensitiveData = "This is sensitive data that should be protected: SECRET_KEY_12345"
+                    val sensitiveData = "Это конфиденциальные данные, которые должны быть защищены: SECRET_KEY_12345"
                     testFile.writeText(sensitiveData)
-                    addLog("Wrote sensitive data to file")
+                    addLog("Записаны конфиденциальные данные в файл")
                     
                     memoryMonitor.addCriticalRegion(testFile.absolutePath)
-                    addLog("Added file path as critical region")
+                    addLog("Добавлен путь к файлу как критический регион")
                     
                     val protectResult = memoryMonitor.protectMemoryRegion(testFile.absolutePath)
-                    addLog("File protection result: $protectResult")
+                    addLog("Результат защиты файла: $protectResult")
                     
                     val scanResult = memoryMonitor.scanMemoryRegion(testFile.absolutePath)
-                    addLog("Initial file scan: $scanResult")
+                    addLog("Первоначальное сканирование файла: $scanResult")
                     
                     val tamperedData = sensitiveData + "\nTAMPERED_DATA"
                     testFile.writeText(tamperedData)
-                    addLog("Modified file content to simulate tampering")
+                    addLog("Изменено содержимое файла для симуляции вмешательства")
                     
                     lifecycleScope.launch {
                         val afterScanResult = memoryMonitor.scanMemoryRegion(testFile.absolutePath)
-                        addLog("Scan after tampering: $afterScanResult (Integrity ${if(afterScanResult) "OK (FAILED TO DETECT)" else "FAIL (TAMPERING DETECTED)"})")
+                        addLog("Сканирование после вмешательства: $afterScanResult (Целостность ${if(afterScanResult) "ОК (НЕ УДАЛОСЬ ОБНАРУЖИТЬ)" else "НЕУДАЧА (ОБНАРУЖЕНО ВМЕШАТЕЛЬСТВО)"})")
                         
                         refreshProtectedRegions()
                     }
                 },
                 modifier = Modifier.fillMaxWidth()
             ) {
-                Text("Test File Path Protection")
+                Text("Тест защиты пути к файлу")
             }
             
             Button(
@@ -256,70 +256,70 @@ class MemoryTestActivity : ComponentActivity() {
                     
                     val criticalPaths = systemFilePatterns.keys.toList()
                     
-                    addLog("Testing protection of system critical paths")
+                    addLog("Тестирование защиты системных критических путей")
                     
                     criticalPaths.forEach { path ->
                         try {
                             val file = File(path)
                             if (file.exists() && file.canRead()) {
-                                addLog("File exists and is readable: $path")
+                                addLog("Файл существует и доступен для чтения: $path")
                                 try {
                                     val initialContent = file.readText()
-                                    addLog("Initial content length: ${initialContent.length} bytes")
+                                    addLog("Длина первоначального содержимого: ${initialContent.length} байт")
                                 } catch (e: Exception) {
-                                    addLog("WARNING: Could not read file content: ${e.message}")
+                                    addLog("ПРЕДУПРЕЖДЕНИЕ: Не удалось прочитать содержимое файла: ${e.message}")
                                 }
                             } else {
-                                addLog("WARNING: File not accessible: $path")
+                                addLog("ПРЕДУПРЕЖДЕНИЕ: Файл недоступен: $path")
                             }
                         } catch (e: Exception) {
-                            addLog("ERROR accessing file $path: ${e.message}")
+                            addLog("ОШИБКА доступа к файлу $path: ${e.message}")
                         }
                     }
                     
                     val addedPaths = criticalPaths.map { path ->
                         val pattern = systemFilePatterns[path] ?: ".*"
                         memoryMonitor.addCriticalRegion(path)
-                        addLog("Added critical region: $path with pattern: $pattern")
-                        addLog("Using regex pattern for $path: $pattern")
+                        addLog("Добавлен критический регион: $path с шаблоном: $pattern")
+                        addLog("Используется шаблон регулярного выражения для $path: $pattern")
                         path
                     }
                     
                     val protectedPaths = addedPaths.filter { path ->
                         val result = memoryMonitor.protectMemoryRegion(path)
-                        addLog("Protection result for $path: $result")
+                        addLog("Результат защиты для $path: $result")
                         
                         val isProcFile = path.startsWith("/proc/")
                         val isEffectivelyProtected = result || isProcFile
                         
                         if (!result && isProcFile) {
-                            addLog("NOTE: Using alternative monitoring for $path since direct protection failed")
+                            addLog("ПРИМЕЧАНИЕ: Используется альтернативный мониторинг для $path, так как прямая защита не удалась")
                         }
                         
                         isEffectivelyProtected
                     }
                     
-                    addLog("Successfully protected ${protectedPaths.size} of ${criticalPaths.size} system paths")
+                    addLog("Успешно защищено ${protectedPaths.size} из ${criticalPaths.size} системных путей")
                     
                     if (!isTamperingCallbackActive) {
                         sdk.getMemoryMonitor().setTamperingCallback(tamperingCallback)
                         isTamperingCallbackActive = true
-                        addLog("Enabled tampering callback for system paths")
+                        addLog("Включен обратный вызов вмешательства для системных путей")
                     }
                     
                     if (!isPeriodicScanningActive) {
                         isPeriodicScanningActive = true
                         sdk.getMemoryMonitor().startPeriodicScanning(2000)
-                        addLog("Started periodic scanning for system paths (every 2 seconds)")
+                        addLog("Начато периодическое сканирование для системных путей (каждые 2 секунды)")
                     }
                     
-                    addLog("System paths are now being monitored. Any changes to these files will trigger tampering alerts.")
+                    addLog("Системные пути теперь мониторятся. Любые изменения в этих файлах вызовут предупреждения о вмешательстве.")
                     
                     refreshProtectedRegions()
                 },
                 modifier = Modifier.fillMaxWidth()
             ) {
-                Text("Monitor System Paths")
+                Text("Мониторинг системных путей")
             }
             
             Button(
@@ -333,22 +333,22 @@ class MemoryTestActivity : ComponentActivity() {
                     }
                     
                     if (systemPaths.isEmpty()) {
-                        addLog("No protected system paths found. Please click 'Monitor System Paths' first.")
+                        addLog("Защищенные системные пути не найдены. Пожалуйста, сначала нажмите 'Мониторинг системных путей'.")
                         return@Button
                     }
                     
                     val pathToTamper = systemPaths.find { it == "/proc/self/maps" } ?: systemPaths.first()
-                    addLog("Simulating tampering with: $pathToTamper")
+                    addLog("Симуляция вмешательства в: $pathToTamper")
                     
                     val tamperingResult = memoryMonitor.simulateMemoryTampering(pathToTamper)
-                    addLog("Tampering simulation result: $tamperingResult")
+                    addLog("Результат симуляции вмешательства: $tamperingResult")
                     
                     if (!tamperingResult) {
-                        addLog("WARNING: Tampering simulation failed. This may be because the file cannot be modified directly.")
+                        addLog("ПРЕДУПРЕЖДЕНИЕ: Симуляция вмешательства не удалась. Это может быть связано с тем, что файл нельзя изменить напрямую.")
                         
                         tamperingCallback.onTamperingDetected(
                             pathToTamper,
-                            "Simulated tampering detected (manual trigger)"
+                            "Обнаружено симулированное вмешательство (ручной запуск)"
                         )
                     }
                     
@@ -356,23 +356,23 @@ class MemoryTestActivity : ComponentActivity() {
                         delay(500)
                         
                         val scanResult = memoryMonitor.scanMemoryRegion(pathToTamper)
-                        addLog("Scan after tampering: $scanResult (Integrity ${if(scanResult) "OK (FAILED TO DETECT)" else "FAIL (TAMPERING DETECTED)"})")
+                        addLog("Сканирование после вмешательства: $scanResult (Целостность ${if(scanResult) "ОК (НЕ УДАЛОСЬ ОБНАРУЖИТЬ)" else "НЕУДАЧА (ОБНАРУЖЕНО ВМЕШАТЕЛЬСТВО)"})")
                         
                         if (scanResult) {
-                            addLog("Scan didn't detect tampering, manually triggering tampering callback")
+                            addLog("Сканирование не обнаружило вмешательства, вручную вызывается обратный вызов вмешательства")
                             tamperingCallback.onTamperingDetected(
                                 pathToTamper,
-                                "Simulated tampering detected (manual trigger)"
+                                "Обнаружено симулированное вмешательство (ручной запуск)"
                             )
                         }
                         
-                        addLog("Note: In a real attack scenario, the attacker would need root access or " +
-                               "sophisticated techniques to modify system files.")
+                        addLog("Примечание: В реальной атаке злоумышленнику потребуется root-доступ или " +
+                               "сложные техники для изменения системных файлов.")
                     }
                 },
                 modifier = Modifier.fillMaxWidth()
             ) {
-                Text("Simulate System Path Tampering")
+                Text("Симулировать вмешательство в системные пути")
             }
             
             Button(
@@ -381,60 +381,60 @@ class MemoryTestActivity : ComponentActivity() {
                     
                     val systemPaths = systemFilePatterns.keys.toList()
                     
-                    addLog("Starting automatic system path monitoring")
+                    addLog("Запуск автоматического мониторинга системных путей")
                     
                     val addedPaths = systemPaths.map { path ->
                         val pattern = systemFilePatterns[path] ?: ".*"
                         memoryMonitor.addCriticalRegion(path)
-                        addLog("Added critical region: $path with pattern: $pattern")
+                        addLog("Добавлен критический регион: $path с шаблоном: $pattern")
                         path
                     }
                     
                     val protectedPaths = addedPaths.filter { path ->
                         val result = memoryMonitor.protectMemoryRegion(path)
-                        addLog("Protection result for $path: $result")
+                        addLog("Результат защиты для $path: $result")
                         result
                     }
                     
-                    addLog("Auto-protected ${protectedPaths.size} of ${systemPaths.size} system paths")
+                    addLog("Автоматически защищено ${protectedPaths.size} из ${systemPaths.size} системных путей")
                     
                     if (!isTamperingCallbackActive) {
                         memoryMonitor.setTamperingCallback(tamperingCallback)
                         isTamperingCallbackActive = true
-                        addLog("Enabled tampering callback")
+                        addLog("Включен обратный вызов вмешательства")
                     }
                     
                     if (!isPeriodicScanningActive) {
                         memoryMonitor.startPeriodicScanning(5000)
                         isPeriodicScanningActive = true
-                        addLog("Started periodic scanning (every 5 seconds)")
+                        addLog("Начато периодическое сканирование (каждые 5 секунд)")
                     }
                     
-                    addLog("Auto-monitoring of system paths is now active")
+                    addLog("Автоматический мониторинг системных путей теперь активен")
                     refreshProtectedRegions()
                 },
                 modifier = Modifier.fillMaxWidth()
             ) {
-                Text("Enable Auto System Path Monitoring")
+                Text("Включить автоматический мониторинг системных путей")
             }
             
             Button(
                 onClick = {
                     isVisualCallbackEnabled = !isVisualCallbackEnabled
-                    val status = if (isVisualCallbackEnabled) "enabled" else "disabled"
-                    addLog("Visual tampering alerts $status")
+                    val status = if (isVisualCallbackEnabled) "включены" else "отключены"
+                    addLog("Визуальные предупреждения о вмешательстве $status")
                     
                     refreshProtectedRegions()
                 },
                 modifier = Modifier.fillMaxWidth()
             ) {
-                Text(if (isVisualCallbackEnabled) "Disable Visual Tampering Alerts" else "Enable Visual Tampering Alerts")
+                Text(if (isVisualCallbackEnabled) "Отключить визуальные предупреждения о вмешательстве" else "Включить визуальные предупреждения о вмешательстве")
             }
             
             Divider(modifier = Modifier.padding(vertical = 8.dp))
             
             Text(
-                text = "Protected Regions (${protectedRegions.size}):",
+                text = "Защищенные регионы (${protectedRegions.size}):",
                 style = MaterialTheme.typography.titleMedium
             )
             
@@ -455,7 +455,7 @@ class MemoryTestActivity : ComponentActivity() {
             Divider(modifier = Modifier.padding(vertical = 8.dp))
             
             Text(
-                text = "Activity Log:",
+                text = "Журнал активности:",
                 style = MaterialTheme.typography.titleMedium
             )
             
